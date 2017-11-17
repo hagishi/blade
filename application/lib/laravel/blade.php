@@ -9,7 +9,7 @@ class Blade {
 	 */
 	protected static $compilers = array(
 		'extensions',
-		'layouts',
+		'extends',
 		'comments',
 		'echos',
 		'forelse',
@@ -134,17 +134,17 @@ class Blade {
 	}
 
 	/**
-	 * Rewrites Blade "@layout" expressions into valid PHP.
+	 * Rewrites Blade "@extends" expressions into valid PHP.
 	 *
 	 * @param  string  $value
 	 * @return string
 	 */
-	protected static function compile_layouts($value)
+	protected static function compile_extends($value)
 	{
-		// If the Blade template is not using "layouts", we'll just return it
-		// unchanged since there is nothing to do with layouts and we will
+		// If the Blade template is not using "extends", we'll just return it
+		// unchanged since there is nothing to do with extends and we will
 		// just let the other Blade compilers handle the rest.
-		if ( ! starts_with($value, '@layout'))
+		if ( ! starts_with($value, '@extends'))
 		{
 			return $value;
 		}
@@ -157,7 +157,7 @@ class Blade {
 		// located on the first line of the template contents.
 		$lines = preg_split("/(\r?\n)/", $value);
 
-		$pattern = static::matcher('layout');
+		$pattern = static::matcher('extends');
 
 		$lines[] = preg_replace($pattern, '$1@include$2', $lines[0]);
 
@@ -175,7 +175,7 @@ class Blade {
 	 */
 	protected static function extract($value, $expression)
 	{
-		preg_match('/@layout(\s*\(.*\))(\s*)/', $value, $matches);
+		preg_match('/@extends(\s*\(.*\))(\s*)/', $value, $matches);
 
 		return str_replace(array("('", "')"), '', $matches[1]);
 	}
